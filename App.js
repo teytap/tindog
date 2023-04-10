@@ -1,26 +1,36 @@
 import dogs from "/data.js";
 
-const dogsData = dogs;
 const likeBtn = document.querySelector(".like-btn");
-// const nopeBtn = document.querySelector(".nope-btn");
-let dogsArray = ["Rex", "Bella", "Teddy"];
+const nopeBtn = document.querySelector(".nope-btn");
+let likedDogs = [];
 
-function getNewDog() {
-  const nextDogsData = dogs[dogsArray.shift()];
-  return nextDogsData ? new Dog(nextDogsData) : new Dog(dogsData[0]);
+function showLikedDogs() {
+  let likedDogsHtml = likedDogs
+    .map((dog) => {
+      return `
+      <div class="liked-dog">
+      <img src="${dog.avatar}"/>
+      <h3>${dog.name}</h3>
+      </div>`;
+    })
+    .join("");
+  return `<div class="results"><h3>You liked them</h3>
+  <div class="liked-dogs-container">${likedDogsHtml}</div></div>`;
 }
 
-// function noped() {
-//   dog.hasBeenSwiped = true;
-//   document.querySelector(".like").style.display = "none";
-//   document.querySelector(".nope").style.display = "block";
-// }
-function liked() {
-  document.querySelector(".nope").style.display = "none";
-  document.querySelector(".like").style.display = "block";
+function noped() {
   dog.hasBeenSwiped = true;
   dog.swipe();
-  render();
+  document.querySelector(".like").style.display = "none";
+  document.querySelector(".nope").style.display = "block";
+}
+function liked() {
+  dog.hasBeenSwiped = true;
+  dog.hasBeenLiked = true;
+  likedDogs.push(dog);
+  dog.swipe();
+  document.querySelector(".nope").style.display = "none";
+  document.querySelector(".like").style.display = "block";
 }
 
 class Dog {
@@ -37,27 +47,34 @@ class Dog {
             <h4>${name}, ${age}</h4>
             <p>${bio}</p>
           </div>
-        </div>`;
+        </div>
+       `;
   }
   swipe() {
     if (this.hasBeenSwiped) {
-      console.log("swiped");
-      getNewDog();
-      render();
+      setTimeout(() => {
+        dog = getNewDog();
+        render();
+      }, 1100);
     }
   }
 }
 
-//const firstDog = new Dog(dogsData[0]);
-
-//let dog = new Dog(dogsData[0]);
-let dog = getNewDog();
-console.log(dog);
+function getNewDog() {
+  const nextDogsData = dogs.shift();
+  return nextDogsData ? new Dog(nextDogsData) : "";
+}
 
 function render() {
-  document.querySelector(".profile").innerHTML = dog.getDogHtml();
+  if (dog) {
+    document.querySelector(".profile").innerHTML = dog.getDogHtml();
+  } else {
+    document.querySelector("main").innerHTML = showLikedDogs(likedDogs);
+  }
 }
 
 likeBtn.addEventListener("click", liked);
-// nopeBtn.addEventListener("click", noped);
+nopeBtn.addEventListener("click", noped);
+
+let dog = getNewDog();
 render();
