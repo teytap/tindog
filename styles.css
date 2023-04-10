@@ -74,14 +74,15 @@ button {
   margin: 40px;
   text-align: center;
 }
-.liked-dogs-container {
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 20px;
+.results h2 {
+  color: #e9446d;
 }
+
 .liked-dog {
   max-width: 200px;
   padding: 10px;
+  display: block;
+  margin: 0 auto;
 }
 @media (max-width: 375px) {
   body {

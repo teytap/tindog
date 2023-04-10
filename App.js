@@ -1,8 +1,9 @@
 import dogs from "/data.js";
 
+let likedDogs = [];
+let isWaiting = false;
 const likeBtn = document.querySelector(".like-btn");
 const nopeBtn = document.querySelector(".nope-btn");
-let likedDogs = [];
 
 function showLikedDogs() {
   let likedDogsHtml = likedDogs
@@ -14,23 +15,37 @@ function showLikedDogs() {
       </div>`;
     })
     .join("");
-  return `<div class="results"><h3>You liked them</h3>
-  <div class="liked-dogs-container">${likedDogsHtml}</div></div>`;
+  let message =
+    likedDogs.length > 1
+      ? "You liked them"
+      : likedDogs.length === 1
+      ? "You liked it"
+      : "You liked none";
+  return `<div class="results"><h2>${message}</h2>
+  ${likedDogsHtml}</div>`;
 }
 
 function noped() {
-  dog.hasBeenSwiped = true;
-  dog.swipe();
-  document.querySelector(".like").style.display = "none";
-  document.querySelector(".nope").style.display = "block";
+  if (isWaiting == false) {
+    dog.hasBeenSwiped = true;
+    dog.swipe();
+    document.querySelector(".like").style.display = "none";
+    document.querySelector(".nope").style.display = "block";
+    isWaiting = false;
+  }
 }
 function liked() {
-  dog.hasBeenSwiped = true;
-  dog.hasBeenLiked = true;
-  likedDogs.push(dog);
-  dog.swipe();
-  document.querySelector(".nope").style.display = "none";
-  document.querySelector(".like").style.display = "block";
+  if (isWaiting == false) {
+    dog.hasBeenSwiped = true;
+    dog.hasBeenLiked = true;
+    dog.swipe();
+    if (!likedDogs.includes(dog)) {
+      likedDogs.push(dog);
+    }
+    document.querySelector(".nope").style.display = "none";
+    document.querySelector(".like").style.display = "block";
+    isWaiting = false;
+  }
 }
 
 class Dog {
@@ -39,6 +54,7 @@ class Dog {
   }
   getDogHtml() {
     const { name, avatar, age, bio } = this;
+
     return ` <div class="profile">
           <img src="/images/badge-like.png" alt="" class="like" />
           <img src="/images/badge-nope.png" alt="" class="nope" />
@@ -48,10 +64,11 @@ class Dog {
             <p>${bio}</p>
           </div>
         </div>
-       `;
+        `;
   }
   swipe() {
     if (this.hasBeenSwiped) {
+      isWaiting = true;
       setTimeout(() => {
         dog = getNewDog();
         render();
@@ -72,9 +89,7 @@ function render() {
     document.querySelector("main").innerHTML = showLikedDogs(likedDogs);
   }
 }
-
 likeBtn.addEventListener("click", liked);
 nopeBtn.addEventListener("click", noped);
-
 let dog = getNewDog();
 render();
