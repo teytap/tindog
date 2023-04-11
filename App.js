@@ -31,7 +31,10 @@ function noped() {
     dog.swipe();
     document.querySelector(".like").style.display = "none";
     document.querySelector(".nope").style.display = "block";
-    isWaiting = false;
+
+    setTimeout(() => {
+      isWaiting = false;
+    }, 1100);
   }
 }
 function liked() {
@@ -39,12 +42,12 @@ function liked() {
     dog.hasBeenSwiped = true;
     dog.hasBeenLiked = true;
     dog.swipe();
-    if (!likedDogs.includes(dog)) {
-      likedDogs.push(dog);
-    }
+    likedDogs.push(dog);
     document.querySelector(".nope").style.display = "none";
     document.querySelector(".like").style.display = "block";
-    isWaiting = false;
+    setTimeout(() => {
+      isWaiting = false;
+    }, 1100);
   }
 }
 
